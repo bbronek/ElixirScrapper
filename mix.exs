@@ -22,7 +22,8 @@ defmodule Scrapper.MixProject do
   defp deps do
     [
       {:floki, "~> 0.30.1"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
     ]
   end
 end
