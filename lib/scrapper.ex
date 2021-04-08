@@ -1,4 +1,5 @@
 defmodule Scrapper do
+
   @moduledoc """
   Module contains two functions get_data and print_contents
   """
@@ -29,21 +30,31 @@ defmodule Scrapper do
         ================
         [:ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok]
 
-    """
+  """
+
+  alias Errors
 
   def get_data(page) do
 
+    cond do
+      not String.match?(page, ~r/^https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,}/) ->
+        raise Errors.Url
+      not String.match?(page, ~r/^https?\:\/\/([\w\.]+)wikipedia.org\/wiki\/([\w]+\_?)+/) ->
+        raise Errors.Wikipedia
+      true ->
+       nil
+    end
 
     HTTPoison.start
 
     case HTTPoison.get(page) do
       {:ok, %HTTPoison.Response{body: body}} ->
         content = body
-           |> Floki.find("h2>span")
-           |> Floki.attribute("id")
-
+          |> Floki.find("h2>span")
+          |> Floki.attribute("id")
         {:ok, content}
     end
+
 
   end
 
